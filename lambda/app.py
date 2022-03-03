@@ -14,14 +14,14 @@ def lambda_handler(event, context):
     result = "NOPE"
     
     get_context = event["getObjectContext"]
-    # user_request_headers = event["userRequest"]["headers"]
+    
     route = get_context["outputRoute"]
     token = get_context["outputToken"]
     s3_url = get_context["inputS3Url"]
     role_name = event["userIdentity"]["sessionContext"]["sessionIssuer"]["arn"].split("role/")[-1].split("/")[-1]
-    logger.warn(role_name)
+    logger.debug(f'{role_name=}')
     key = s3_url.split("?")[0].split(".com/")[-1]
-    # logger.warn(key)
+    logger.debug(f'{key=}')
     bucket = os.environ.get("BUCKET_NAME")
 
     tags = s3.get_object_tagging(
@@ -35,9 +35,10 @@ def lambda_handler(event, context):
         role_tags = iam.list_role_tags(
             RoleName=role_name,
         )["Tags"]
-        logger.warn(json.dumps(role_tags))
+        logger.debug("role_tags:")
+        logger.debug(json.dumps(role_tags))
         role_access = list(filter(lambda x: x.get("Key") == "access", role_tags))
-        logger.warn(role_access)
+        logger.debug(f'{role_access=}')
         role_access = role_access[0] if role_access else None
         for a in access:
             if a == role_access["Value"]:
@@ -45,7 +46,6 @@ def lambda_handler(event, context):
                 break
     else:
         result = "YUP!"
-        # s3.write_get_object_response(RequestRoute=route, RequestToken=token, StatusCode=200,)
 
     if result == "YUP":
         s3.write_get_object_response(RequestRoute=route, RequestToken=token, StatusCode=200,)
@@ -55,5 +55,4 @@ def lambda_handler(event, context):
     
     return {
         'statusCode': 200,
-        # 'body': json.dumps('Hello from Lambda!')
     }

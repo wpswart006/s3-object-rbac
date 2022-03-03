@@ -22,6 +22,6 @@ data "archive_file" "archive" {
   type        = "zip"
   source_dir  = "${path.module}/lambda"
   output_path = "${path.module}/lambda_function_package.zip"
-  
-#   depends_on = [null_resource.lambda_exporter]
+
+  #   depends_on = [null_resource.lambda_exporter]
 }

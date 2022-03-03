@@ -58,8 +58,22 @@ resource "aws_iam_role" "blue-role" {
 
 data "aws_iam_policy_document" "inline_policy" {
   statement {
+    effect    = "Allow"
     actions   = ["s3-object-lambda:GetObject", "lambda:InvokeFunction"]
     resources = ["*"]
+  }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:GetObject"]
+    resources = ["*"]
+    condition {
+      test     = "StringLike"
+      variable = "s3:ExistingObjectTag/access"
+      values   = ["$${aws:PrincipalTag/access}"]
+
+    }
+
   }
 }
 
