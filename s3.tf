@@ -13,28 +13,6 @@ resource "aws_s3_bucket_public_access_block" "b" {
   block_public_policy = true
 }
 
-# resource "aws_s3_bucket_object" "Cups" {
-#   bucket = aws_s3_bucket.b
-#   key    = "cups_object"
-
-#   tags = {
-#     Owner    = "Willem"
-#     TeamCode = "blue"
-#   }
-
-# }
-
-# resource "aws_s3_bucket_object" "Saucers" {
-#   bucket = aws_s3_bucket.b.bucket_name
-#   key    = "saucers_object"
-
-#   tags = {
-#     Owner    = "Willem"
-#     TeamCode = "red"
-#   }
-
-# }
-
 resource "aws_s3_object" "red_object" {
   bucket = aws_s3_bucket.b.bucket
   key    = "Cups"
